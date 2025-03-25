@@ -1,5 +1,6 @@
 package br.senai.sp.jandira.bmi.screens
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -36,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import br.senai.sp.jandira.bmi.R
 
 @Composable
@@ -52,14 +54,16 @@ fun TelaInical(
         mutableStateOf(value = "")
     }
     var context = LocalContext.current
+
+    //
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(
                 brush = Brush.linearGradient(
                     listOf(
-                        Color(0xFF5608A4),
-                        Color(0xFFBA88FF)
+                        Color(0xFF378335),
+                        Color(0xFF3BC43B)
                     )
                 )
             )
@@ -88,16 +92,16 @@ fun TelaInical(
                     .height(450.dp),
                 shape = RoundedCornerShape(48.dp, 48.dp)
             ) {
-                Column (
+                Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(32.dp),
                     verticalArrangement = Arrangement.SpaceBetween,
                     horizontalAlignment = Alignment.End
-                ){
-                    Column (
+                ) {
+                    Column(
                         modifier = Modifier
-                    ){
+                    ) {
                         Text(
                             text = stringResource(R.string.what),
                             fontSize = 22.sp,
@@ -120,7 +124,7 @@ fun TelaInical(
                                 Icon(
                                     imageVector = Icons.Default.AccountCircle,
                                     contentDescription = "",
-                                    tint = Color(0xFF5608A4)
+                                    tint = Color(0xFF0DA408)
                                 )
                             },
                             keyboardOptions = KeyboardOptions(
@@ -140,16 +144,25 @@ fun TelaInical(
 
                     Button(
                         onClick = {
-                            if (nomeState.value.length < 3){
+                            if (nomeState.value.length < 3) {
                                 isErrorStateInputName.value = true
                                 erroMessageState.value = context.getString(R.string.support_name)
-                            }else{
+
+                            } else {
+                                // Criar o acesoo a um arquivo SharedPreferences
+                                val sharedNome = context
+                                    .getSharedPreferences("usuario", Context.MODE_PRIVATE)
+                                //Criar variavel para editar ou abrir o arquivo
+                                val editor = sharedNome.edit()
+                                //Adiciona uma nova linha
+                                editor.putString("user_name", nomeState.value)
+                                editor.apply()
                                 navController?.navigate("user_data")
                             }
                         }
                     ) {
                         Text(
-                            text =  stringResource(R.string.next)
+                            text = stringResource(R.string.next)
                         )
                         Icon(
                             imageVector = Icons.Filled.ArrowForward,
@@ -166,5 +179,6 @@ fun TelaInical(
 @Preview(showSystemUi = true)
 @Composable
 private fun TelaInicalPreview() {
-    TelaInical(null)
+    val navController = rememberNavController()
+    TelaInical(navController)
 }

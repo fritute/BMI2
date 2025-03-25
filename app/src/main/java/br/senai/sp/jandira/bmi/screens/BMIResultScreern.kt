@@ -1,6 +1,7 @@
 package br.senai.sp.jandira.bmi.screens
 
 
+import android.content.Context
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -56,12 +57,28 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import br.senai.sp.jandira.bmi.R
+import br.senai.sp.jandira.bmi.model.BmiStatus
 import org.w3c.dom.Text
+import java.util.Locale
 
 @Composable
 fun BMIResultScreen(
     navController: NavHostController?
 ) {
+
+    val context = LocalContext.current
+
+    val  sharedUserFile = context
+        .getSharedPreferences("usuario" ,Context.MODE_PRIVATE)
+
+    val age = sharedUserFile.getInt("user_age", 0)
+    var height: Double = sharedUserFile.getInt("user_height", 0).toDouble()
+    val weight = sharedUserFile.getInt("user_weight", 0)
+
+    height /= 100.0
+
+
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -120,8 +137,8 @@ fun BMIResultScreen(
                                 5.dp,
                                 brush = Brush.linearGradient(
                                     listOf(
-                                        Color(0xFF8700FF),
-                                        Color(0xFF493A6E)
+                                        Color(0xFFB27EE1),
+                                        Color(0xFF1C7236)
                                     )
                                 )),
                             elevation = CardDefaults.elevatedCardElevation(5.dp)
@@ -148,7 +165,7 @@ fun BMIResultScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(90.dp),
-                            colors = CardDefaults.cardColors(Color(0x9F2894A8)),
+                            colors = CardDefaults.cardColors(Color(0x9F1DDE21)),
                             shape = RoundedCornerShape(10.dp)
                         ){
                             Row (
@@ -169,7 +186,7 @@ fun BMIResultScreen(
                                         fontSize = 20.sp,
                                     )
                                     Text(
-                                        text = stringResource(R.string.exampleNumber),
+                                        text = age.toString(),
                                         fontSize = 22.sp,
                                         fontWeight = FontWeight.Bold
                                     )
@@ -186,7 +203,7 @@ fun BMIResultScreen(
                                         fontSize = 20.sp,
                                     )
                                     Text(
-                                        text = stringResource(R.string.exampleNumber),
+                                        text = "$weight kg" ,
                                         fontSize = 22.sp,
                                         fontWeight = FontWeight.Bold
                                     )
@@ -203,7 +220,11 @@ fun BMIResultScreen(
                                         fontSize = 20.sp,
                                     )
                                     Text(
-                                        text = stringResource(R.string.exampleNumber),
+                                        text = String.format(
+                                            Locale.getDefault(),
+                                            "%.2f",
+                                            height
+                                        ),
                                         fontSize = 22.sp,
                                         fontWeight = FontWeight.Bold
                                     )
